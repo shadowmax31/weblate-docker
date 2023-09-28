@@ -6,12 +6,12 @@ ARG TARGETARCH
 
 LABEL name="Weblate"
 LABEL version=$WEBLATE_VERSION
-LABEL maintainer="Michal Čihař <michal@cihar.com>"
+LABEL maintainer="shadowmax31 <ety_95@protonmail.com>"
 LABEL org.opencontainers.image.url="https://weblate.org/"
 LABEL org.opencontainers.image.documentation="https://docs.weblate.org/en/latest/admin/install/docker.html"
-LABEL org.opencontainers.image.source="https://github.com/WeblateOrg/docker"
+LABEL org.opencontainers.image.source="https://github.com/shadowmax31/weblate-docker"
 LABEL org.opencontainers.image.version=$WEBLATE_VERSION
-LABEL org.opencontainers.image.vendor="Michal Čihař"
+LABEL org.opencontainers.image.vendor="shadowmax31"
 LABEL org.opencontainers.image.title="Weblate"
 LABEL org.opencontainers.image.description="A web-based continuous localization system with tight version control integration"
 LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
@@ -114,22 +114,12 @@ RUN \
   && bundle clean --force \
   && pip install --no-cache-dir --upgrade $(grep -E '^(pip|wheel|setuptools)==' /app/src/requirements.txt) \
   && pip install --no-cache-dir --no-binary :all: $(grep -E '^(cffi|lxml)==' /app/src/requirements.txt) \
-  && case "$WEBLATE_VERSION" in \
-    *+* ) \
-      pip install \
+  && pip install \
         --no-cache-dir \
         -r /app/src/requirements.txt \
         "https://github.com/translate/translate/archive/master.zip" \
         "https://github.com/WeblateOrg/language-data/archive/main.zip" \
-        "https://github.com/WeblateOrg/weblate/archive/$WEBLATE_DOCKER_GIT_REVISION.zip#egg=Weblate[$WEBLATE_EXTRAS]" \
-        ;; \
-    * ) \
-      pip install \
-        --no-cache-dir \
-        -r /app/src/requirements.txt \
-        "Weblate[$WEBLATE_EXTRAS]==$WEBLATE_VERSION" \
-      ;; \
-  esac \
+        "https://github.com/shadowmax31/weblate/archive/custom-$WEBLATE_VERSION.zip#egg=Weblate[$WEBLATE_EXTRAS]" \
   && python -c 'from phply.phpparse import make_parser; make_parser()' \
   && ln -s /usr/local/share/weblate/examples/ /app/ \
   && apt-get -y purge \
